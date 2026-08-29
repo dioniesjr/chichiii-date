@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Chichiii, will you go on a date with me? 💕</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="hearts-bg" aria-hidden="true"></div>
+  <div class="sparkles" aria-hidden="true"></div>
+
+  <main class="container" id="question-screen">
+    <p class="greeting">Hey chichiii...</p>
+    <h1>Will you go on a date with me? 💕</h1>
+    <p class="subtitle">You make every day feel like magic ✨</p>
+
+    <div class="gif-container">
+      <img
+        id="main-gif"
+        src="https://media.tenor.com/EBV7OT7ACfwAAAAj/u-u-qua-qua-u-quaa.gif"
+        alt="Cute romantic gif"
+        width="200"
+        height="200"
+      >
+    </div>
+
+    <div class="buttons">
+      <button id="yes-btn" type="button">Yes! 💖</button>
+      <button id="no-btn" type="button">No</button>
+    </div>
+
+    <p id="tease-toast" aria-live="polite"></p>
+  </main>
+
+  <section class="celebration hidden" id="celebration-screen" aria-hidden="true">
+    <div class="celebration-card">
+      <p class="celebration-greeting">Yay chichiii!!</p>
+      <h2 class="celebration-title">I can't wait for our date! 💗</h2>
+      <p class="celebration-message">You just made me the happiest person alive 🥹💕</p>
+
+      <div class="kachow-container">
+        <img
+          id="kachow-gif"
+          src="https://media.tenor.com/X8U8QZ8QZ8QAAAAj/lightning-mcqueen-kachow.gif"
+          alt="Lightning McQueen Kachow!"
+          width="280"
+          height="200"
+        >
+      </div>
+
+      <p class="celebration-footer">See you soon, my love 💕</p>
+    </div>
+  </section>
+
+  <button id="music-toggle" type="button" aria-label="Toggle music">🔊</button>
+  <audio id="bg-music" loop preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/02/07/audio_8cb749bd72.mp3" type="audio/mpeg">
+  </audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
