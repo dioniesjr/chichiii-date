@@ -34,7 +34,8 @@ const yesTeasePokes = [
 let yesTeasedCount = 0;
 let noClickCount = 0;
 let runawayEnabled = false;
-let musicPlaying = true;
+let musicPlaying = false;
+let musicStarted = false;
 
 const mainGif = document.getElementById("main-gif");
 const yesBtn = document.getElementById("yes-btn");
@@ -47,37 +48,48 @@ const musicToggle = document.getElementById("music-toggle");
 
 kachowGif.src = KACHOW_GIF;
 
-music.muted = true;
-music.volume = 0.25;
-music.play().then(() => {
-  music.muted = false;
-}).catch(() => {
-  document.addEventListener(
-    "click",
-    () => {
-      music.muted = false;
-      music.play().catch(() => {});
-    },
-    { once: true }
-  );
-});
+music.volume = 0.35;
 
-musicToggle.addEventListener("click", toggleMusic);
-yesBtn.addEventListener("click", handleYesClick);
-noBtn.addEventListener("click", handleNoClick);
+function setMusicIcon(playing) {
+  musicPlaying = playing;
+  musicToggle.textContent = playing ? "🔊" : "🔇";
+}
 
-function toggleMusic() {
+function startMusic() {
+  if (musicStarted && !music.paused) {
+    return Promise.resolve();
+  }
+
+  musicStarted = true;
+  return music.play().then(() => {
+    setMusicIcon(true);
+  }).catch(() => {
+    musicStarted = false;
+    setMusicIcon(false);
+  });
+}
+
+setMusicIcon(false);
+
+document.addEventListener("click", () => {
+  if (!musicStarted) {
+    startMusic();
+  }
+}, { once: true });
+
+musicToggle.addEventListener("click", (event) => {
+  event.stopPropagation();
+
   if (musicPlaying) {
     music.pause();
-    musicPlaying = false;
-    musicToggle.textContent = "🔇";
-  } else {
-    music.muted = false;
-    music.play();
-    musicPlaying = true;
-    musicToggle.textContent = "🔊";
+    setMusicIcon(false);
+    return;
   }
-}
+
+  startMusic();
+});
+yesBtn.addEventListener("click", handleYesClick);
+noBtn.addEventListener("click", handleNoClick);
 
 function handleYesClick() {
   if (!runawayEnabled) {
