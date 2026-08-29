@@ -21,10 +21,11 @@
     <div class="gif-container">
       <img
         id="main-gif"
-        src="https://media.tenor.com/EBV7OT7ACfwAAAAj/u-u-qua-qua-u-quaa.gif"
+        src="assets/main.gif"
         alt="Cute romantic gif"
         width="200"
         height="200"
+        decoding="async"
       >
     </div>
 
@@ -42,13 +43,17 @@
       <h2 class="celebration-title">I can't wait for our date! 💗</h2>
       <p class="celebration-message">You just made me the happiest person alive 🥹💕</p>
 
+      <p class="song-lyric">"Don't smile because it happened, baby,<br>cry because it's over"</p>
+      <p class="song-credit">Don't Smile — Sabrina Carpenter 💕</p>
+
       <div class="kachow-container">
         <img
           id="kachow-gif"
-          src="https://media1.tenor.com/m/4X5ZBhkmJWkAAAAd/ka-chow-lightning-mcqueen.gif"
+          src="assets/kachow.gif"
           alt="Lightning McQueen Kachow!"
           width="280"
           height="200"
+          decoding="async"
         >
       </div>
 
@@ -61,6 +66,9 @@
     <source src="music/romantic.mp3" type="audio/mpeg">
   </audio>
 
+  <div id="yt-player" aria-hidden="true"></div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
   <script src="script.js"></script>
 </body>
 </html>
