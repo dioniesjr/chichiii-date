@@ -10,7 +10,7 @@ const gifStages = [
 ];
 
 const KACHOW_GIF =
-  "https://media.tenor.com/X8U8QZ8QZ8QAAAAj/lightning-mcqueen-kachow.gif";
+  "https://media1.tenor.com/m/4X5ZBhkmJWkAAAAd/ka-chow-lightning-mcqueen.gif";
 
 const noMessages = [
   "No",
