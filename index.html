@@ -69,8 +69,16 @@
   </section>
 
   <button id="music-toggle" type="button" aria-label="Toggle music" aria-pressed="true">🔊</button>
-  <audio id="bg-music" loop autoplay muted preload="auto">
-    <source src="music/romantic.mp3" type="audio/mpeg">
+  <audio
+    id="bg-music"
+    loop
+    autoplay
+    muted
+    preload="auto"
+    data-intro-src="music/glue-song.mp3"
+    data-celebration-src="music/dont-smile.mp3"
+  >
+    <source src="music/glue-song.mp3" type="audio/mpeg">
   </audio>
 
   <script src="script.js"></script>

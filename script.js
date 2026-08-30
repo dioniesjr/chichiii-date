@@ -40,6 +40,8 @@ const music = document.getElementById("bg-music");
 const questionScreen = document.getElementById("question-screen");
 const celebrationScreen = document.getElementById("celebration-screen");
 const musicToggle = document.getElementById("music-toggle");
+const introSong = music.dataset.introSrc;
+const celebrationSong = music.dataset.celebrationSrc;
 
 music.volume = 0.35;
 music.muted = true;
@@ -61,6 +63,17 @@ function playMusic(unmute = true) {
   return music.play().catch(() => {});
 }
 
+function switchSong(src) {
+  if (!src || music.dataset.currentSrc === src) {
+    return playMusic(true);
+  }
+
+  music.dataset.currentSrc = src;
+  music.src = src;
+  music.load();
+  return playMusic(true);
+}
+
 function pauseMusic() {
   music.pause();
 }
@@ -72,10 +85,15 @@ function unlockMusic() {
 }
 
 setMusicIcon(true);
+music.dataset.currentSrc = introSong;
 playMusic(false);
 
 document.addEventListener("pointerdown", unlockMusic, { once: true });
 document.addEventListener("keydown", unlockMusic, { once: true });
+
+musicToggle.addEventListener("pointerdown", (event) => {
+  event.stopPropagation();
+});
 
 musicToggle.addEventListener("click", (event) => {
   event.stopPropagation();
@@ -110,7 +128,7 @@ function showCelebration() {
   celebrationScreen.classList.remove("hidden");
   celebrationScreen.setAttribute("aria-hidden", "false");
   spawnConfetti();
-  playMusic(true);
+  switchSong(celebrationSong);
 }
 
 function showTeaseMessage(msg) {
