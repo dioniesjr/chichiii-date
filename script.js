@@ -47,6 +47,7 @@ let invitationStarted = false;
 const mainGif = document.getElementById("main-gif");
 const yesBtn = document.getElementById("yes-btn");
 const noBtn = document.getElementById("no-btn");
+const noSlot = document.querySelector(".no-slot");
 const continueBtn = document.getElementById("continue-btn");
 const music = document.getElementById("bg-music");
 const introScreen = document.getElementById("intro-screen");
@@ -248,14 +249,17 @@ function handleNoClick() {
   const hideNo = noClickCount >= 10;
 
   if (!hideNo) {
-    noBtn.style.position = "relative";
-    noBtn.style.left = "";
-    noBtn.style.top = "";
+    noSlot.classList.remove("empty");
+    noBtn.style.position = "absolute";
+    noBtn.style.left = "50%";
+    noBtn.style.top = "50%";
+    noBtn.style.transform = "translate(-50%, -50%)";
   }
 
   yesBtn.style.zIndex = "1";
   noBtn.style.zIndex = hideNo ? "140" : "120";
   noBtn.classList.toggle("no-hidden", hideNo);
+  noSlot.classList.toggle("empty", hideNo);
   document.documentElement.style.setProperty("--no-count", String(noClickCount));
 
   const msgIndex = Math.min(noClickCount, noMessages.length - 1);
@@ -338,6 +342,7 @@ function hideNoInsideYes() {
   noBtn.style.position = "fixed";
   noBtn.style.left = `${Math.max(8, Math.min(window.innerWidth - btnW - 8, x))}px`;
   noBtn.style.top = `${Math.max(8, Math.min(window.innerHeight - btnH - 8, y))}px`;
+  noBtn.style.transform = "none";
   noBtn.style.zIndex = "140";
   showTeaseMessage("It hid in Yes because even No knows the answer 💕");
 }

@@ -300,6 +300,22 @@ h1 {
   filter: brightness(0.98);
 }
 
+.no-slot {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: min(68vw, 240px);
+  height: 58px;
+  flex: 0 0 min(68vw, 240px);
+}
+
+.no-slot.empty {
+  width: 0;
+  height: 0;
+  flex-basis: 0;
+}
+
 #no-btn {
   background: linear-gradient(135deg, #ffb3d9, #ff8fc7);
   color: #fff;
@@ -309,15 +325,21 @@ h1 {
   font-weight: 600;
   font-family: "Quicksand", sans-serif;
   padding: 12px 28px;
+  width: min(68vw, 240px);
+  min-height: 46px;
   cursor: pointer;
   transition: transform 0.2s, font-size 0.25s ease, padding 0.25s ease;
   box-shadow: 0 4px 14px rgba(255, 105, 180, 0.35);
   touch-action: none;
   -webkit-tap-highlight-color: transparent;
-  position: relative;
+  position: absolute;
+  left: 50%;
+  top: 50%;
   z-index: 2;
-  white-space: nowrap;
+  white-space: normal;
+  line-height: 1.1;
   transform-origin: center;
+  transform: translate(-50%, -50%);
 }
 
 #no-btn:hover {
@@ -327,6 +349,7 @@ h1 {
 #no-btn.no-hidden {
   width: auto;
   min-width: 0;
+  min-height: 0;
   border-width: 1px;
   opacity: 0.9;
   box-shadow: 0 2px 8px rgba(255, 105, 180, 0.28);
