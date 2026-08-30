@@ -43,9 +43,6 @@
       <h2 class="celebration-title">I can't wait for our date! 💗</h2>
       <p class="celebration-message">You just made me the happiest person alive 🥹💕</p>
 
-      <p class="song-lyric">"Don't smile because it happened, baby,<br>cry because it's over"</p>
-      <p class="song-credit">Don't Smile — Sabrina Carpenter 💕</p>
-
       <div class="kachow-container">
         <img
           id="kachow-gif"
@@ -57,18 +54,25 @@
         >
       </div>
 
+      <div class="cinnamoroll-side">
+        <img
+          src="assets/cinnamoroll-flowers.svg"
+          alt="Cinnamoroll holding a sunflower and pink roses"
+          width="150"
+          height="164"
+          decoding="async"
+        >
+      </div>
+
       <p class="celebration-footer">See you soon, chichiii 💕</p>
     </div>
   </section>
 
-  <button id="music-toggle" type="button" aria-label="Toggle music">🔇</button>
-  <audio id="bg-music" loop preload="auto">
+  <button id="music-toggle" type="button" aria-label="Toggle music" aria-pressed="true">🔊</button>
+  <audio id="bg-music" loop autoplay muted preload="auto">
     <source src="music/romantic.mp3" type="audio/mpeg">
   </audio>
 
-  <div id="yt-player" aria-hidden="true"></div>
-
-  <script src="https://www.youtube.com/iframe_api"></script>
   <script src="script.js"></script>
 </body>
 </html>

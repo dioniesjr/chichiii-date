@@ -1,14 +1,12 @@
-const CELEBRATION_SONG_ID = "Ju9X2HMMid4";
-
 const gifStages = [
   "assets/main.gif",
-  "https://media1.tenor.com/m/uDugCXK4vI4AAAAd/chiikawa-hachiware.gif",
-  "https://media.tenor.com/f_rkpJbH1s8AAAAj/somsom1012.gif",
-  "https://media.tenor.com/OGY9zdREsVAAAAAj/somsom1012.gif",
-  "https://media1.tenor.com/m/WGfra-Y_Ke0AAAAd/chiikawa-sad.gif",
-  "https://media.tenor.com/CivArbX7NzQAAAAj/somsom1012.gif",
-  "https://media.tenor.com/5_tv1HquZlcAAAAj/chiikawa.gif",
-  "https://media1.tenor.com/m/uDugCXK4vI4AAAAC/chiikawa-hachiware.gif",
+  "assets/stage-pleading.gif",
+  "assets/stage-sad.gif",
+  "assets/stage-crying.gif",
+  "assets/stage-devastated.gif",
+  "assets/stage-final.gif",
+  "assets/stage-crying.gif",
+  "assets/stage-final.gif",
 ];
 
 const noMessages = [
@@ -33,10 +31,7 @@ const yesTeasePokes = [
 let yesTeasedCount = 0;
 let noClickCount = 0;
 let runawayEnabled = false;
-let musicPlaying = false;
-let musicStarted = false;
-let onCelebrationScreen = false;
-let ytPlayer = null;
+let musicEnabled = true;
 
 const mainGif = document.getElementById("main-gif");
 const yesBtn = document.getElementById("yes-btn");
@@ -46,86 +41,55 @@ const questionScreen = document.getElementById("question-screen");
 const celebrationScreen = document.getElementById("celebration-screen");
 const musicToggle = document.getElementById("music-toggle");
 
-mainGif.referrerPolicy = "no-referrer";
 music.volume = 0.35;
+music.muted = true;
 
-window.onYouTubeIframeAPIReady = function onYouTubeIframeAPIReady() {
-  ytPlayer = new YT.Player("yt-player", {
-    videoId: CELEBRATION_SONG_ID,
-    playerVars: {
-      autoplay: 0,
-      controls: 0,
-      disablekb: 1,
-      fs: 0,
-      loop: 1,
-      playlist: CELEBRATION_SONG_ID,
-      modestbranding: 1,
-      rel: 0,
-    },
-  });
-};
-
-function setMusicIcon(playing) {
-  musicPlaying = playing;
-  musicToggle.textContent = playing ? "🔊" : "🔇";
+function setMusicIcon(enabled) {
+  musicToggle.textContent = enabled ? "🔊" : "🔇";
+  musicToggle.setAttribute("aria-pressed", String(enabled));
 }
 
-function startMusic() {
-  if (onCelebrationScreen) {
-    return startCelebrationMusic();
-  }
-
-  if (musicStarted && !music.paused) {
+function playMusic(unmute = true) {
+  if (!musicEnabled) {
     return Promise.resolve();
   }
 
-  musicStarted = true;
-  return music.play().then(() => {
-    setMusicIcon(true);
-  }).catch(() => {
-    musicStarted = false;
-    setMusicIcon(false);
-  });
+  if (unmute) {
+    music.muted = false;
+  }
+
+  return music.play().catch(() => {});
 }
 
-function startCelebrationMusic() {
+function pauseMusic() {
   music.pause();
-
-  if (!ytPlayer || typeof ytPlayer.playVideo !== "function") {
-    return;
-  }
-
-  ytPlayer.setVolume(50);
-  ytPlayer.playVideo();
-  musicStarted = true;
-  setMusicIcon(true);
 }
 
-function pauseAllMusic() {
-  music.pause();
-  if (ytPlayer && typeof ytPlayer.pauseVideo === "function") {
-    ytPlayer.pauseVideo();
+function unlockMusic() {
+  if (musicEnabled) {
+    playMusic(true);
   }
-  setMusicIcon(false);
 }
 
-setMusicIcon(false);
+setMusicIcon(true);
+playMusic(false);
 
-document.addEventListener("click", () => {
-  if (!musicStarted && !onCelebrationScreen) {
-    startMusic();
-  }
-}, { once: true });
+document.addEventListener("pointerdown", unlockMusic, { once: true });
+document.addEventListener("keydown", unlockMusic, { once: true });
 
 musicToggle.addEventListener("click", (event) => {
   event.stopPropagation();
 
-  if (musicPlaying) {
-    pauseAllMusic();
+  if (musicEnabled) {
+    musicEnabled = false;
+    pauseMusic();
+    setMusicIcon(false);
     return;
   }
 
-  startMusic();
+  musicEnabled = true;
+  setMusicIcon(true);
+  playMusic(true);
 });
 
 yesBtn.addEventListener("click", handleYesClick);
@@ -142,31 +106,11 @@ function handleYesClick() {
 }
 
 function showCelebration() {
-  onCelebrationScreen = true;
   questionScreen.classList.add("hidden");
   celebrationScreen.classList.remove("hidden");
   celebrationScreen.setAttribute("aria-hidden", "false");
   spawnConfetti();
-  switchToCelebrationMusic();
-}
-
-function switchToCelebrationMusic() {
-  music.pause();
-  music.currentTime = 0;
-
-  if (ytPlayer && typeof ytPlayer.playVideo === "function") {
-    startCelebrationMusic();
-    return;
-  }
-
-  const waitForYt = setInterval(() => {
-    if (ytPlayer && typeof ytPlayer.playVideo === "function") {
-      clearInterval(waitForYt);
-      startCelebrationMusic();
-    }
-  }, 200);
-
-  setTimeout(() => clearInterval(waitForYt), 10000);
+  playMusic(true);
 }
 
 function showTeaseMessage(msg) {

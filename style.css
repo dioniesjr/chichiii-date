@@ -245,17 +245,6 @@ h1 {
   transform: scale(1.1);
 }
 
-#yt-player {
-  position: fixed;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-  bottom: 0;
-  left: 0;
-  z-index: -1;
-}
-
 .hidden {
   display: none !important;
 }
@@ -287,6 +276,7 @@ h1 {
 }
 
 .celebration-card {
+  position: relative;
   text-align: center;
   max-width: 480px;
   width: 100%;
@@ -325,37 +315,6 @@ h1 {
   margin-bottom: 16px;
 }
 
-.song-lyric {
-  font-family: "Pacifico", cursive;
-  font-size: clamp(1rem, 4vw, 1.35rem);
-  color: var(--pink-hot);
-  line-height: 1.5;
-  margin-bottom: 8px;
-  padding: 0 8px;
-  animation: fadeInLyric 1.2s ease 0.4s both;
-}
-
-.song-credit {
-  font-size: clamp(0.8rem, 2.8vw, 0.95rem);
-  color: var(--pink-deep);
-  font-weight: 600;
-  font-style: italic;
-  margin-bottom: 16px;
-  opacity: 0.85;
-  animation: fadeInLyric 1.2s ease 0.7s both;
-}
-
-@keyframes fadeInLyric {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .kachow-container {
   margin: 12px auto;
   display: flex;
@@ -380,6 +339,31 @@ h1 {
   to {
     opacity: 1;
     transform: scale(1) rotate(0);
+  }
+}
+
+.cinnamoroll-side {
+  position: absolute;
+  right: -62px;
+  bottom: 82px;
+  width: clamp(104px, 18vw, 150px);
+  pointer-events: none;
+  animation: bouquetFloat 2.8s ease-in-out infinite;
+}
+
+.cinnamoroll-side img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 8px 18px rgba(255, 20, 147, 0.28));
+}
+
+@keyframes bouquetFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(1deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(-1deg);
   }
 }
 
@@ -417,6 +401,14 @@ h1 {
   #yes-btn,
   #no-btn {
     width: min(100%, 260px);
+  }
+}
+
+@media (max-width: 680px) {
+  .cinnamoroll-side {
+    position: static;
+    width: min(36vw, 132px);
+    margin: 8px auto 0;
   }
 }
 
