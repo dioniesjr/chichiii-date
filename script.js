@@ -11,14 +11,16 @@ const gifStages = [
 
 const noMessages = [
   "No",
-  "Are you sure, chichiii? 🥺",
-  "Pretty please... 💕",
-  "I'll be so sad... 😢",
-  "My heart can't take this 💔",
-  "One more chance? 🌸",
-  "Please say yes... 🥹",
-  "You're breaking my heart 💗",
-  "Fine, try to catch me 😜",
+  "Sure? 🥺",
+  "Please? 💕",
+  "I'll be sad 😢",
+  "My heart 💔",
+  "One chance? 🌸",
+  "Say yes? 🥹",
+  "Still no? 💗",
+  "Almost gone 😜",
+  "Tiny no",
+  "no",
 ];
 
 const yesTeasePokes = [
@@ -47,7 +49,6 @@ let invitationStarted = false;
 const mainGif = document.getElementById("main-gif");
 const yesBtn = document.getElementById("yes-btn");
 const noBtn = document.getElementById("no-btn");
-const noSlot = document.querySelector(".no-slot");
 const continueBtn = document.getElementById("continue-btn");
 const music = document.getElementById("bg-music");
 const introScreen = document.getElementById("intro-screen");
@@ -249,17 +250,15 @@ function handleNoClick() {
   const hideNo = noClickCount >= 10;
 
   if (!hideNo) {
-    noSlot.classList.remove("empty");
-    noBtn.style.position = "absolute";
-    noBtn.style.left = "50%";
-    noBtn.style.top = "50%";
-    noBtn.style.transform = "translate(-50%, -50%)";
+    noBtn.style.position = "relative";
+    noBtn.style.left = "";
+    noBtn.style.top = "";
+    noBtn.style.transform = "";
   }
 
   yesBtn.style.zIndex = "1";
   noBtn.style.zIndex = hideNo ? "140" : "120";
   noBtn.classList.toggle("no-hidden", hideNo);
-  noSlot.classList.toggle("empty", hideNo);
   document.documentElement.style.setProperty("--no-count", String(noClickCount));
 
   const msgIndex = Math.min(noClickCount, noMessages.length - 1);
@@ -268,25 +267,13 @@ function handleNoClick() {
   noBtn.setAttribute("aria-label", noLabel);
 
   const growthStep = Math.min(noClickCount, 10);
-  const targetWidth = Math.min(150 + growthStep * 26, window.innerWidth - 28);
-  const targetHeight = Math.min(58 + growthStep * 10, 166);
-  yesBtn.style.width = `${targetWidth}px`;
-  yesBtn.style.minHeight = `${targetHeight}px`;
-  yesBtn.style.fontSize = `${Math.min(22 + growthStep * 1.9, 42)}px`;
-  yesBtn.style.setProperty("--yes-scale", "1");
+  yesBtn.style.fontSize = `${Math.min(22 + growthStep * 2.6, 46)}px`;
+  yesBtn.style.padding = `${Math.min(16 + growthStep * 5, 64)}px ${Math.min(40 + growthStep * 12, 156)}px`;
 
   const shrinkStep = Math.min(noClickCount, 10);
-  const shrinkDelay = Math.max(0, noClickCount - 1);
-  const slotWidth = Math.max(44, 240 - shrinkDelay * 20);
-  const slotHeight = Math.max(24, 58 - shrinkDelay * 3);
-  noSlot.style.width = hideNo ? "0px" : `${slotWidth}px`;
-  noSlot.style.height = hideNo ? "0px" : `${slotHeight}px`;
-  noSlot.style.flexBasis = hideNo ? "0px" : `${slotHeight}px`;
-  noBtn.style.width = hideNo ? "auto" : `${slotWidth}px`;
-  noBtn.style.minHeight = hideNo ? "0px" : `${slotHeight - 10}px`;
-  noBtn.style.height = hideNo ? "auto" : `${slotHeight - 10}px`;
-  noBtn.style.fontSize = `${Math.max(16 - shrinkStep * 0.95, hideNo ? 7 : 9)}px`;
-  noBtn.style.padding = `${Math.max(12 - shrinkStep, hideNo ? 2 : 4)}px ${Math.max(28 - shrinkStep * 2.2, hideNo ? 5 : 8)}px`;
+  noBtn.style.minWidth = hideNo ? "0px" : "128px";
+  noBtn.style.fontSize = `${Math.max(16 - shrinkStep * 0.9, hideNo ? 7 : 9)}px`;
+  noBtn.style.padding = `${Math.max(12 - shrinkStep, hideNo ? 2 : 4)}px ${Math.max(28 - shrinkStep * 2, hideNo ? 5 : 8)}px`;
 
   const gifIndex = Math.min(noClickCount, gifStages.length - 1);
   swapGif(gifStages[gifIndex]);
