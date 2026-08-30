@@ -42,6 +42,7 @@ let runawayEnabled = false;
 let musicEnabled = true;
 let suppressNextNoClick = false;
 let yesPressStarted = false;
+let invitationStarted = false;
 
 const mainGif = document.getElementById("main-gif");
 const yesBtn = document.getElementById("yes-btn");
@@ -119,7 +120,11 @@ musicToggle.addEventListener("click", (event) => {
   playMusic(true);
 });
 
-continueBtn.addEventListener("click", startInvitation);
+continueBtn.addEventListener("pointerdown", handleContinuePress);
+continueBtn.addEventListener("click", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+});
 continueBtn.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" && event.key !== " ") {
     return;
@@ -159,6 +164,12 @@ function handleYesClick(event) {
   showCelebration();
 }
 
+function handleContinuePress(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  startInvitation();
+}
+
 function handleYesKeydown(event) {
   if (event.key !== "Enter" && event.key !== " ") {
     return;
@@ -195,6 +206,11 @@ function handleNoKeydown(event) {
 }
 
 function startInvitation() {
+  if (invitationStarted) {
+    return;
+  }
+
+  invitationStarted = true;
   introScreen.classList.add("hidden");
   introScreen.setAttribute("aria-hidden", "true");
   questionScreen.classList.remove("hidden");
@@ -223,30 +239,34 @@ function handleNoClick() {
   noClickCount += 1;
   noBtn.style.zIndex = "120";
   yesBtn.style.zIndex = "1";
+  noBtn.classList.toggle("no-hidden", noClickCount >= 10);
 
   const msgIndex = Math.min(noClickCount, noMessages.length - 1);
-  noBtn.textContent = noMessages[msgIndex];
-  noBtn.setAttribute("aria-label", noMessages[msgIndex]);
+  const noLabel = noClickCount >= 10 ? "no" : noMessages[msgIndex];
+  noBtn.textContent = noLabel;
+  noBtn.setAttribute("aria-label", noLabel);
 
-  const growthStep = Math.min(noClickCount, 3);
+  const growthStep = Math.min(noClickCount, 8);
+  const visualScale = Math.min(1 + noClickCount * 0.11, 1.95);
   const yesSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
-  yesBtn.style.fontSize = `${Math.min(yesSize * 1.14, 30)}px`;
+  yesBtn.style.fontSize = `${Math.min(yesSize * 1.08, 34)}px`;
 
-  const padY = Math.min(16 + growthStep * 4, 30);
-  const padX = Math.min(40 + growthStep * 8, 72);
+  const padY = Math.min(16 + growthStep * 3, 40);
+  const padX = Math.min(40 + growthStep * 7, 96);
   yesBtn.style.padding = `${padY}px ${padX}px`;
+  yesBtn.style.transform = `scale(${visualScale})`;
 
   const noSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
-  const shrinkFactor = Math.pow(0.82, noClickCount);
-  noBtn.style.fontSize = `${Math.max(noSize * 0.82, 8)}px`;
-  const noPadY = Math.max(12 * shrinkFactor, 4);
-  const noPadX = Math.max(28 * shrinkFactor, 8);
+  const shrinkFactor = noClickCount >= 10 ? Math.pow(0.62, noClickCount - 9) * 0.5 : Math.pow(0.82, noClickCount);
+  noBtn.style.fontSize = `${Math.max(noSize * 0.78, noClickCount >= 10 ? 5 : 8)}px`;
+  const noPadY = Math.max(12 * shrinkFactor, noClickCount >= 10 ? 2 : 4);
+  const noPadX = Math.max(28 * shrinkFactor, noClickCount >= 10 ? 4 : 8);
   noBtn.style.padding = `${noPadY}px ${noPadX}px`;
 
   const gifIndex = Math.min(noClickCount, gifStages.length - 1);
   swapGif(gifStages[gifIndex]);
 
-  if (noClickCount >= 3 && !runawayEnabled) {
+  if (noClickCount >= 10 && !runawayEnabled) {
     runawayEnabled = true;
     enableRunaway();
   }
@@ -271,6 +291,11 @@ function enableRunaway() {
 }
 
 function runAway() {
+  if (noClickCount >= 10) {
+    hideNoInsideYes();
+    return;
+  }
+
   const margin = 16;
   const btnW = noBtn.offsetWidth;
   const btnH = noBtn.offsetHeight;
@@ -283,7 +308,23 @@ function runAway() {
   noBtn.style.position = "fixed";
   noBtn.style.left = `${randomX}px`;
   noBtn.style.top = `${randomY}px`;
-  noBtn.style.zIndex = "50";
+  noBtn.style.zIndex = "140";
+}
+
+function hideNoInsideYes() {
+  const yesRect = yesBtn.getBoundingClientRect();
+  const btnW = noBtn.offsetWidth;
+  const btnH = noBtn.offsetHeight;
+  const jitterX = (Math.random() - 0.5) * Math.min(yesRect.width * 0.35, 80);
+  const jitterY = (Math.random() - 0.5) * Math.min(yesRect.height * 0.35, 42);
+  const x = yesRect.left + yesRect.width / 2 - btnW / 2 + jitterX;
+  const y = yesRect.top + yesRect.height / 2 - btnH / 2 + jitterY;
+
+  noBtn.style.position = "fixed";
+  noBtn.style.left = `${Math.max(8, Math.min(window.innerWidth - btnW - 8, x))}px`;
+  noBtn.style.top = `${Math.max(8, Math.min(window.innerHeight - btnH - 8, y))}px`;
+  noBtn.style.zIndex = "140";
+  showTeaseMessage("It hid in Yes because even No knows the answer 💕");
 }
 
 function spawnConfetti() {
