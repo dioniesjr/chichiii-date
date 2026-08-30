@@ -268,17 +268,25 @@ function handleNoClick() {
   noBtn.setAttribute("aria-label", noLabel);
 
   const growthStep = Math.min(noClickCount, 10);
-  const targetWidth = Math.min(150 + growthStep * 24, window.innerWidth * 0.84);
-  const targetHeight = Math.min(58 + growthStep * 7, 132);
-  const targetScale = Math.min(1 + growthStep * 0.055, 1.55);
+  const targetWidth = Math.min(150 + growthStep * 26, window.innerWidth - 28);
+  const targetHeight = Math.min(58 + growthStep * 10, 166);
   yesBtn.style.width = `${targetWidth}px`;
   yesBtn.style.minHeight = `${targetHeight}px`;
-  yesBtn.style.fontSize = `${Math.min(22 + growthStep * 1.55, 38)}px`;
-  yesBtn.style.setProperty("--yes-scale", String(targetScale));
+  yesBtn.style.fontSize = `${Math.min(22 + growthStep * 1.9, 42)}px`;
+  yesBtn.style.setProperty("--yes-scale", "1");
 
   const shrinkStep = Math.min(noClickCount, 10);
-  noBtn.style.fontSize = `${Math.max(16 - shrinkStep * 0.85, hideNo ? 7 : 9)}px`;
-  noBtn.style.padding = `${Math.max(12 - shrinkStep, hideNo ? 2 : 4)}px ${Math.max(28 - shrinkStep * 2, hideNo ? 5 : 8)}px`;
+  const shrinkDelay = Math.max(0, noClickCount - 1);
+  const slotWidth = Math.max(44, 240 - shrinkDelay * 20);
+  const slotHeight = Math.max(24, 58 - shrinkDelay * 3);
+  noSlot.style.width = hideNo ? "0px" : `${slotWidth}px`;
+  noSlot.style.height = hideNo ? "0px" : `${slotHeight}px`;
+  noSlot.style.flexBasis = hideNo ? "0px" : `${slotHeight}px`;
+  noBtn.style.width = hideNo ? "auto" : `${slotWidth}px`;
+  noBtn.style.minHeight = hideNo ? "0px" : `${slotHeight - 10}px`;
+  noBtn.style.height = hideNo ? "auto" : `${slotHeight - 10}px`;
+  noBtn.style.fontSize = `${Math.max(16 - shrinkStep * 0.95, hideNo ? 7 : 9)}px`;
+  noBtn.style.padding = `${Math.max(12 - shrinkStep, hideNo ? 2 : 4)}px ${Math.max(28 - shrinkStep * 2.2, hideNo ? 5 : 8)}px`;
 
   const gifIndex = Math.min(noClickCount, gifStages.length - 1);
   swapGif(gifStages[gifIndex]);
