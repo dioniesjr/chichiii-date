@@ -40,6 +40,8 @@ let yesTeasedCount = 0;
 let noClickCount = 0;
 let runawayEnabled = false;
 let musicEnabled = true;
+let suppressNextNoClick = false;
+let yesPressStarted = false;
 
 const mainGif = document.getElementById("main-gif");
 const yesBtn = document.getElementById("yes-btn");
@@ -118,11 +120,25 @@ musicToggle.addEventListener("click", (event) => {
   playMusic(true);
 });
 
+yesBtn.addEventListener("pointerdown", armYesClick);
 yesBtn.addEventListener("click", handleYesClick);
-noBtn.addEventListener("click", handleNoClick);
+yesBtn.addEventListener("keydown", handleYesKeydown);
+noBtn.addEventListener("pointerdown", handleNoPress);
+noBtn.addEventListener("click", suppressNoClick);
+noBtn.addEventListener("keydown", handleNoKeydown);
+
+function armYesClick(event) {
+  yesPressStarted = event.target === yesBtn;
+}
 
 function handleYesClick(event) {
-  if (event && event.currentTarget !== yesBtn) {
+  const isKeyboardClick = event && event.detail === 0;
+  const isRealYesPress = yesPressStarted || isKeyboardClick;
+  yesPressStarted = false;
+
+  if (event && (event.currentTarget !== yesBtn || event.target !== yesBtn || !isRealYesPress)) {
+    event.preventDefault();
+    event.stopPropagation();
     return;
   }
 
@@ -133,6 +149,41 @@ function handleYesClick(event) {
     return;
   }
   showCelebration();
+}
+
+function handleYesKeydown(event) {
+  if (event.key !== "Enter" && event.key !== " ") {
+    return;
+  }
+
+  yesPressStarted = true;
+}
+
+function handleNoPress(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  suppressNextNoClick = true;
+
+  handleNoClick();
+}
+
+function suppressNoClick(event) {
+  if (!suppressNextNoClick) {
+    return;
+  }
+
+  event.preventDefault();
+  event.stopPropagation();
+  suppressNextNoClick = false;
+}
+
+function handleNoKeydown(event) {
+  if (event.key !== "Enter" && event.key !== " ") {
+    return;
+  }
+
+  event.preventDefault();
+  handleNoClick();
 }
 
 function showCelebration() {
@@ -153,16 +204,19 @@ function showTeaseMessage(msg) {
 
 function handleNoClick() {
   noClickCount += 1;
+  noBtn.style.zIndex = "120";
+  yesBtn.style.zIndex = "1";
 
   const msgIndex = Math.min(noClickCount, noMessages.length - 1);
   noBtn.textContent = noMessages[msgIndex];
   noBtn.setAttribute("aria-label", noMessages[msgIndex]);
 
+  const growthStep = Math.min(noClickCount, 3);
   const yesSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
-  yesBtn.style.fontSize = `${Math.min(yesSize * 1.22, 34)}px`;
+  yesBtn.style.fontSize = `${Math.min(yesSize * 1.14, 30)}px`;
 
-  const padY = Math.min(16 + noClickCount * 4, 42);
-  const padX = Math.min(40 + noClickCount * 8, 96);
+  const padY = Math.min(16 + growthStep * 4, 30);
+  const padX = Math.min(40 + growthStep * 8, 72);
   yesBtn.style.padding = `${padY}px ${padX}px`;
 
   const noSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
@@ -197,18 +251,6 @@ function swapGif(src) {
 
 function enableRunaway() {
   noBtn.addEventListener("pointerenter", runAway);
-  noBtn.addEventListener("pointerdown", dodgeNoPress);
-}
-
-function dodgeNoPress(event) {
-  if (!runawayEnabled) {
-    return;
-  }
-
-  event.preventDefault();
-  event.stopPropagation();
-  runAway();
-  showTeaseMessage("Not that one, sweetheart. The shiny pink one 💖");
 }
 
 function runAway() {
