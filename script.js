@@ -121,9 +121,11 @@ musicToggle.addEventListener("click", (event) => {
 });
 
 continueBtn.addEventListener("pointerdown", handleContinuePress);
-continueBtn.addEventListener("click", (event) => {
+continueBtn.addEventListener("click", handleContinueClick);
+continueBtn.addEventListener("touchend", (event) => {
   event.preventDefault();
   event.stopPropagation();
+  startInvitation();
 });
 continueBtn.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" && event.key !== " ") {
@@ -165,6 +167,12 @@ function handleYesClick(event) {
 }
 
 function handleContinuePress(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  startInvitation();
+}
+
+function handleContinueClick(event) {
   event.preventDefault();
   event.stopPropagation();
   startInvitation();
@@ -237,31 +245,36 @@ function showTeaseMessage(msg) {
 
 function handleNoClick() {
   noClickCount += 1;
-  noBtn.style.zIndex = "120";
+  const hideNo = noClickCount >= 10;
+
+  if (!hideNo) {
+    noBtn.style.position = "relative";
+    noBtn.style.left = "";
+    noBtn.style.top = "";
+  }
+
   yesBtn.style.zIndex = "1";
-  noBtn.classList.toggle("no-hidden", noClickCount >= 10);
+  noBtn.style.zIndex = hideNo ? "140" : "120";
+  noBtn.classList.toggle("no-hidden", hideNo);
+  document.documentElement.style.setProperty("--no-count", String(noClickCount));
 
   const msgIndex = Math.min(noClickCount, noMessages.length - 1);
-  const noLabel = noClickCount >= 10 ? "no" : noMessages[msgIndex];
+  const noLabel = hideNo ? "no" : noMessages[msgIndex];
   noBtn.textContent = noLabel;
   noBtn.setAttribute("aria-label", noLabel);
 
-  const growthStep = Math.min(noClickCount, 8);
-  const visualScale = Math.min(1 + noClickCount * 0.11, 1.95);
-  const yesSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
-  yesBtn.style.fontSize = `${Math.min(yesSize * 1.08, 34)}px`;
+  const growthStep = Math.min(noClickCount, 10);
+  const targetWidth = Math.min(150 + growthStep * 24, window.innerWidth * 0.84);
+  const targetHeight = Math.min(58 + growthStep * 7, 132);
+  const targetScale = Math.min(1 + growthStep * 0.055, 1.55);
+  yesBtn.style.width = `${targetWidth}px`;
+  yesBtn.style.minHeight = `${targetHeight}px`;
+  yesBtn.style.fontSize = `${Math.min(22 + growthStep * 1.55, 38)}px`;
+  yesBtn.style.setProperty("--yes-scale", String(targetScale));
 
-  const padY = Math.min(16 + growthStep * 3, 40);
-  const padX = Math.min(40 + growthStep * 7, 96);
-  yesBtn.style.padding = `${padY}px ${padX}px`;
-  yesBtn.style.transform = `scale(${visualScale})`;
-
-  const noSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
-  const shrinkFactor = noClickCount >= 10 ? Math.pow(0.62, noClickCount - 9) * 0.5 : Math.pow(0.82, noClickCount);
-  noBtn.style.fontSize = `${Math.max(noSize * 0.78, noClickCount >= 10 ? 5 : 8)}px`;
-  const noPadY = Math.max(12 * shrinkFactor, noClickCount >= 10 ? 2 : 4);
-  const noPadX = Math.max(28 * shrinkFactor, noClickCount >= 10 ? 4 : 8);
-  noBtn.style.padding = `${noPadY}px ${noPadX}px`;
+  const shrinkStep = Math.min(noClickCount, 10);
+  noBtn.style.fontSize = `${Math.max(16 - shrinkStep * 0.85, hideNo ? 7 : 9)}px`;
+  noBtn.style.padding = `${Math.max(12 - shrinkStep, hideNo ? 2 : 4)}px ${Math.max(28 - shrinkStep * 2, hideNo ? 5 : 8)}px`;
 
   const gifIndex = Math.min(noClickCount, gifStages.length - 1);
   swapGif(gifStages[gifIndex]);
@@ -274,7 +287,9 @@ function handleNoClick() {
   if (runawayEnabled) {
     const poke = romanticNoPokes[(noClickCount - 3) % romanticNoPokes.length];
     showTeaseMessage(poke);
-    window.requestAnimationFrame(runAway);
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(runAway);
+    });
   }
 }
 
