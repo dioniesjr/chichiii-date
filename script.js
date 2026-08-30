@@ -28,6 +28,14 @@ const yesTeasePokes = [
   "Click no, I dare you 💕",
 ];
 
+const romanticNoPokes = [
+  "My answer is still you, chichiii 🌻",
+  "The No button is shy now. The Yes button brought flowers 💐",
+  "Tiny plot twist: Yes is where the date magic lives ✨",
+  "I saved the sweetest page for your Yes 💖",
+  "Cinnamoroll says the roses are waiting for you 🌸",
+];
+
 let yesTeasedCount = 0;
 let noClickCount = 0;
 let runawayEnabled = false;
@@ -113,7 +121,11 @@ musicToggle.addEventListener("click", (event) => {
 yesBtn.addEventListener("click", handleYesClick);
 noBtn.addEventListener("click", handleNoClick);
 
-function handleYesClick() {
+function handleYesClick(event) {
+  if (event && event.currentTarget !== yesBtn) {
+    return;
+  }
+
   if (!runawayEnabled) {
     const msg = yesTeasePokes[Math.min(yesTeasedCount, yesTeasePokes.length - 1)];
     yesTeasedCount += 1;
@@ -144,12 +156,13 @@ function handleNoClick() {
 
   const msgIndex = Math.min(noClickCount, noMessages.length - 1);
   noBtn.textContent = noMessages[msgIndex];
+  noBtn.setAttribute("aria-label", noMessages[msgIndex]);
 
   const yesSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
-  yesBtn.style.fontSize = `${yesSize * 1.3}px`;
+  yesBtn.style.fontSize = `${Math.min(yesSize * 1.22, 34)}px`;
 
-  const padY = Math.min(16 + noClickCount * 6, 70);
-  const padX = Math.min(40 + noClickCount * 12, 140);
+  const padY = Math.min(16 + noClickCount * 4, 42);
+  const padX = Math.min(40 + noClickCount * 8, 96);
   yesBtn.style.padding = `${padY}px ${padX}px`;
 
   const noSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
@@ -163,8 +176,14 @@ function handleNoClick() {
   swapGif(gifStages[gifIndex]);
 
   if (noClickCount >= 3 && !runawayEnabled) {
-    enableRunaway();
     runawayEnabled = true;
+    enableRunaway();
+  }
+
+  if (runawayEnabled) {
+    const poke = romanticNoPokes[(noClickCount - 3) % romanticNoPokes.length];
+    showTeaseMessage(poke);
+    window.requestAnimationFrame(runAway);
   }
 }
 
@@ -177,8 +196,19 @@ function swapGif(src) {
 }
 
 function enableRunaway() {
-  noBtn.addEventListener("mouseover", runAway);
-  noBtn.addEventListener("touchstart", runAway, { passive: true });
+  noBtn.addEventListener("pointerenter", runAway);
+  noBtn.addEventListener("pointerdown", dodgeNoPress);
+}
+
+function dodgeNoPress(event) {
+  if (!runawayEnabled) {
+    return;
+  }
+
+  event.preventDefault();
+  event.stopPropagation();
+  runAway();
+  showTeaseMessage("Not that one, sweetheart. The shiny pink one 💖");
 }
 
 function runAway() {
