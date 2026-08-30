@@ -95,6 +95,102 @@ body {
   width: 100%;
 }
 
+.intro-screen {
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 32px);
+  max-width: 520px;
+  text-align: center;
+  padding: clamp(28px, 7vw, 52px) clamp(18px, 6vw, 36px);
+  color: var(--pink-deep);
+}
+
+.intro-envelope {
+  position: relative;
+  width: clamp(132px, 34vw, 178px);
+  aspect-ratio: 1.28;
+  margin: 0 auto 22px;
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, transparent 49%, rgba(255, 255, 255, 0.75) 50%) left bottom / 50% 52% no-repeat,
+    linear-gradient(215deg, transparent 49%, rgba(255, 255, 255, 0.75) 50%) right bottom / 50% 52% no-repeat,
+    linear-gradient(35deg, #ff87c2, #ffd1e8);
+  border: 3px solid rgba(255, 255, 255, 0.72);
+  box-shadow: 0 18px 42px rgba(255, 20, 147, 0.26);
+  animation: introFloat 2.6s ease-in-out infinite;
+}
+
+.intro-envelope::before {
+  content: "";
+  position: absolute;
+  inset: 12px 14px auto;
+  height: 54%;
+  border-radius: 14px 14px 4px 4px;
+  background: linear-gradient(150deg, #fff7fb, #ffdff0);
+  transform: translateY(-10px) rotate(-2deg);
+  box-shadow: 0 7px 18px rgba(233, 30, 140, 0.15);
+}
+
+.intro-seal {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  font-size: clamp(1.5rem, 6vw, 2rem);
+  filter: drop-shadow(0 4px 8px rgba(233, 30, 140, 0.28));
+}
+
+@keyframes introFloat {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+}
+
+.intro-kicker {
+  font-family: "Pacifico", cursive;
+  font-size: clamp(1.1rem, 4.5vw, 1.55rem);
+  color: var(--pink-hot);
+  margin-bottom: 8px;
+}
+
+.intro-title {
+  max-width: 340px;
+  margin: 0 auto 12px;
+  font-size: clamp(1.55rem, 7vw, 2.15rem);
+  line-height: 1.18;
+  overflow-wrap: break-word;
+}
+
+.intro-copy {
+  max-width: 300px;
+  margin: 0 auto 24px;
+  font-size: clamp(0.95rem, 3.2vw, 1.08rem);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.continue-btn {
+  background: linear-gradient(135deg, #ff85c1, var(--pink-hot));
+  color: white;
+  border: 3px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  font-size: clamp(1rem, 4vw, 1.28rem);
+  font-weight: 700;
+  font-family: "Quicksand", sans-serif;
+  padding: 16px 30px;
+  cursor: pointer;
+  box-shadow: 0 8px 28px var(--pink-glow);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.continue-btn:hover,
+.continue-btn:focus-visible {
+  transform: scale(1.04) translateY(-2px);
+  box-shadow: 0 12px 34px rgba(255, 20, 147, 0.5);
+  outline: none;
+}
+
 .greeting {
   font-family: "Pacifico", cursive;
   font-size: clamp(1.4rem, 5vw, 2rem);

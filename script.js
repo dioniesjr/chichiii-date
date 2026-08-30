@@ -46,7 +46,9 @@ let yesPressStarted = false;
 const mainGif = document.getElementById("main-gif");
 const yesBtn = document.getElementById("yes-btn");
 const noBtn = document.getElementById("no-btn");
+const continueBtn = document.getElementById("continue-btn");
 const music = document.getElementById("bg-music");
+const introScreen = document.getElementById("intro-screen");
 const questionScreen = document.getElementById("question-screen");
 const celebrationScreen = document.getElementById("celebration-screen");
 const musicToggle = document.getElementById("music-toggle");
@@ -98,9 +100,6 @@ setMusicIcon(true);
 music.dataset.currentSrc = introSong;
 playMusic(false);
 
-document.addEventListener("pointerdown", unlockMusic, { once: true });
-document.addEventListener("keydown", unlockMusic, { once: true });
-
 musicToggle.addEventListener("pointerdown", (event) => {
   event.stopPropagation();
 });
@@ -120,6 +119,15 @@ musicToggle.addEventListener("click", (event) => {
   playMusic(true);
 });
 
+continueBtn.addEventListener("click", startInvitation);
+continueBtn.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") {
+    return;
+  }
+
+  event.preventDefault();
+  startInvitation();
+});
 yesBtn.addEventListener("pointerdown", armYesClick);
 yesBtn.addEventListener("click", handleYesClick);
 yesBtn.addEventListener("keydown", handleYesKeydown);
@@ -186,8 +194,17 @@ function handleNoKeydown(event) {
   handleNoClick();
 }
 
+function startInvitation() {
+  introScreen.classList.add("hidden");
+  introScreen.setAttribute("aria-hidden", "true");
+  questionScreen.classList.remove("hidden");
+  questionScreen.setAttribute("aria-hidden", "false");
+  unlockMusic();
+}
+
 function showCelebration() {
   questionScreen.classList.add("hidden");
+  questionScreen.setAttribute("aria-hidden", "true");
   celebrationScreen.classList.remove("hidden");
   celebrationScreen.setAttribute("aria-hidden", "false");
   spawnConfetti();
